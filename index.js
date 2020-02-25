@@ -1,5 +1,6 @@
 const https = require('https');
 const http = require('http');
+const NotFoundError = require('./errors/notFound');
 
 const callfor =  (reqUrl, params = {}) => {
     reqUrl = reqUrl + '/';
@@ -56,7 +57,7 @@ const callfor =  (reqUrl, params = {}) => {
                 response.SysStatus = "Invalid Address";
             }
 
-            reject(response);
+            reject(new NotFoundError("Address Not found"));
         });
         req.end();
     })
@@ -66,7 +67,7 @@ const callfor =  (reqUrl, params = {}) => {
 (async () => {
     try {
       const data = await callfor(
-        'https://the-showman-and-the-g-clef-u8pmjbhb7ixy.runkit.sh',
+        'https://the-showman-and-the-g-clef-u8pmjbhb7ixy.unkit.sh',
       );
       console.log(data);
     } catch (error) {

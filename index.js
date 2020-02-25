@@ -1,7 +1,7 @@
 const https = require('https');
 const http = require('http');
 
-const callfor = (reqUrl, params = {}) => {
+const callfor =  (reqUrl, params = {}) => {
     reqUrl = reqUrl + '/';
     let [protocol, addr] = reqUrl.split('://');
     if(protocol != 'http' && protocol != 'https'){
@@ -20,19 +20,56 @@ const callfor = (reqUrl, params = {}) => {
         headers : params.headers || {}
     }
 
-    let req = protocol.request(reqParams, resp => {
-        console.log(`Status Code : ${resp.statusCode}`);
+    console.log(reqParams);
+    return new Promise((resolve, reject) => {
+        let req = protocol.request(reqParams, resp => {
+            console.log(resp);
+            let statusCode = null;
+            if(resp.statusCode >= 200 && resp.statusCode <= 300){
+                statusCode = resp.statusCode;
+            }
+            else if(resp.statusCode == 400){
+                return reject(new Error(`Bad Request. Status Code : ${resp.statusCode}`));
+            }else if(resp.statusCode == 404){
+                return reject(new Error(`Not Found. Status Code: ${resp.statusCode}`));
+            }else{
+                return reject(new Error(`Error. Status Code: ${resp.statusCode}`));
+            }
 
-        let data = [];
-        resp.on('data', chunk => {
-            data.push(chunk);
+            let data = [];
+            resp.on('data', partOfData => {
+                data.push(partOfData);
+            })
+
+            resp.on('end', () => {
+                let response = {};
+                response.StatusCode = statusCode;
+                response.RequestedUrl = reqUrl;
+                response.Data = Buffer.concat(data);
+                resolve(response);
+            });
         })
+        req.on('error',(error) => {
+            let response = {};
+            if(error.code == 'ENOTFOUND'){
+                response.ErrorCode = 'ENOTFOUND';
+                response.SysStatus = "Invalid Address";
+            }
 
-        resp.on('end', () => console.log(Buffer.concat(data)));
+            reject(response);
+        });
+        req.end();
     })
 
-    req.on('error', (error) => console.log(error));
-    req.end();
 }
 
-let res = callfor('https://jsonplaceholder.typicode.com/todos/1');
+(async () => {
+    try {
+      const data = await callfor(
+        'https://the-showman-and-the-g-clef-u8pmjbhb7ixy.runkit.sh',
+      );
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  })();

@@ -1,40 +1,30 @@
-const https = require('https');
-const http = require('http');
-const NotFoundError = require('./errors/notFound');
+const CallForError = require('./src/error');
+const errorSchema = require('./src/http-error-schema');
+const pathResolver = require('./src/path');
 
-const callfor =  (reqUrl, params = {}) => {
-    reqUrl = reqUrl + '/';
-    let [protocol, addr] = reqUrl.split('://');
-    if(protocol != 'http' && protocol != 'https'){
-        return "InvalidAddress";
+const callfor = async (reqUrl, params = {}) => {
+    try{
+        var resp = await pathResolver(reqUrl, params);
+    }catch(error){
+        throw new CallForError(errorSchema.invalidUrl);
     }
-    protocol = protocol === 'http' ? http : https;
-    let path = addr.substring(addr.indexOf('/'));
-    let baseAddr = addr.split('/')[0];
-    let [host, port] = baseAddr.split(':');
 
-    let reqParams = {
-        hostname: host,
-        port: parseInt(port) || (protocol == http ? 80 : 443),
-        path : path,
-        method : params.method || 'GET',
-        headers : params.headers || {}
-    }
+    const protocol = resp.protocol;
+    const reqParams = resp.reqParams;
 
     console.log(reqParams);
     return new Promise((resolve, reject) => {
         let req = protocol.request(reqParams, resp => {
-            console.log(resp);
             let statusCode = null;
             if(resp.statusCode >= 200 && resp.statusCode <= 300){
                 statusCode = resp.statusCode;
             }
             else if(resp.statusCode == 400){
-                return reject(new Error(`Bad Request. Status Code : ${resp.statusCode}`));
+                return reject(new CallForError(errorSchema.badRequest));
             }else if(resp.statusCode == 404){
-                return reject(new Error(`Not Found. Status Code: ${resp.statusCode}`));
+                return reject(new CallForError(errorSchema.notFound));
             }else{
-                return reject(new Error(`Error. Status Code: ${resp.statusCode}`));
+                return reject(new CallForError(errorSchema.annonymous));
             }
 
             let data = [];
@@ -44,33 +34,37 @@ const callfor =  (reqUrl, params = {}) => {
 
             resp.on('end', () => {
                 let response = {};
+                console.log(data);
                 response.StatusCode = statusCode;
                 response.RequestedUrl = reqUrl;
                 response.Data = Buffer.concat(data);
                 resolve(response);
             });
         })
-        req.on('error',(error) => {
-            let response = {};
-            if(error.code == 'ENOTFOUND'){
-                response.ErrorCode = 'ENOTFOUND';
-                response.SysStatus = "Invalid Address";
-            }
 
-            reject(new NotFoundError("Address Not found"));
+        req.on('error',(error) => {
+            if(error.code == 'ENOTFOUND'){
+                reject(new CallForError(errorSchema.notFound));
+            }else{
+                reject(new CallForError(errorSchema.annonymous));
+            }
         });
         req.end();
     })
 
 }
 
-(async () => {
-    try {
-      const data = await callfor(
-        'https://the-showman-and-the-g-clef-u8pmjbhb7ixy.unkit.sh',
-      );
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-    }
-  })();
+// (async () => {
+//     try {
+//       const data = await callfor(
+//         'https://the-showman-and-the-g-clef-u8pmjbhb7ixy.runkit.sh',
+//       );
+//       console.log(data);
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   })();
+
+callfor('https://the-showman-and-the-g-clef-u8pmjbhb7ixy.runkit.sh').then(res => res.text()).then(res => {
+    console.log(res);
+})

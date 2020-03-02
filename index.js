@@ -34,10 +34,19 @@ const callfor = async (reqUrl, params = {}) => {
 
             resp.on('end', () => {
                 let response = {};
-                console.log(data);
+                let totalData = Buffer.concat(data);
                 response.StatusCode = statusCode;
                 response.RequestedUrl = reqUrl;
-                response.Data = Buffer.concat(data);
+                response.Data = totalData;
+                response.utf8 = () => {
+                    return totalData.toString('utf8')
+                }
+                response.json = () => {
+                    return totalData.toJSON();
+                }
+                response.arrayBuffer = () => {
+                    return totalData.buffer;
+                }
                 resolve(response);
             });
         })
@@ -49,6 +58,10 @@ const callfor = async (reqUrl, params = {}) => {
                 reject(new CallForError(errorSchema.annonymous));
             }
         });
+
+        if(params.body){
+            req.write(params.body);
+        }
         req.end();
     })
 
@@ -65,6 +78,25 @@ const callfor = async (reqUrl, params = {}) => {
 //     }
 //   })();
 
-callfor('https://the-showman-and-the-g-clef-u8pmjbhb7ixy.runkit.sh').then(res => res.text()).then(res => {
-    console.log(res);
-})
+// callfor('https://the-showman-and-the-g-clef-u8pmjbhb7ixy.runkit.sh').then(res => res.utf8()).then(res => console.log(res));
+// callfor('https://jsonplaceholder.typicode.com/todos').then(res => res.arrayBuffer()).then(res=> console.log(res));
+
+
+callfor('https://jsonplaceholder.typicode.com/posts').then(res => res.utf8()).then(res => console.log(res));
+
+
+// callfor('https://jsonplaceholder.typicode.com/posts', {
+//     method: 'POST',
+//     body : JSON.stringify({
+//         title: 'sbr',
+//         body: 'this is new shohidul bari ritoo',
+//         userId: 1
+//     }),
+//     headers: {
+//         "Content-type": "application/json; charset=UTF-8"
+//     }
+// }).then(res => res.utf8()).then(res => console.log(res));
+
+// callfor('https://jsonplaceholder.typicode.com/posts/1', {
+//     method: 'DELETE'
+// }).then(res => console.log(res));

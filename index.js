@@ -78,11 +78,13 @@ const callfor = async (reqUrl, params = {}) => {
 //     }
 //   })();
 
-// callfor('https://the-showman-and-the-g-clef-u8pmjbhb7ixy.runkit.sh').then(res => res.utf8()).then(res => console.log(res));
-// callfor('https://jsonplaceholder.typicode.com/todos').then(res => res.arrayBuffer()).then(res=> console.log(res));
+//callfor('https://the-showman-and-the-g-clef-u8pmjbhb7ixy.runkit.sh').then(res => res.utf8()).then(res => console.log(res));
+//callfor('https://jsonplaceholder.typicode.com/todos').then(res => res.utf8()).then(res=> console.log(res));
 
 
-callfor('https://jsonplaceholder.typicode.com/posts').then(res => res.utf8()).then(res => console.log(res));
+callfor('https://jsonplaceholder.typicode.com/posts').then(res => res.arrayBuffer()).then(res => console.log(res));
+
+//callfor('http://localhost:3000/user').then(res => res.utf8()).then(res => console.log(res));
 
 
 // callfor('https://jsonplaceholder.typicode.com/posts', {
@@ -100,3 +102,14 @@ callfor('https://jsonplaceholder.typicode.com/posts').then(res => res.utf8()).th
 // callfor('https://jsonplaceholder.typicode.com/posts/1', {
 //     method: 'DELETE'
 // }).then(res => console.log(res));
+
+// callfor('http://localhost:3000/user', {
+//     method: 'DELETE',
+//     body: JSON.stringify({
+//         name : 'shohidul bari',
+//         age : 25
+//     }),
+//     headers: {
+//         "Content-type": "application/json; charset=UTF-8"
+//     }
+// }).then(res=> res.utf8()).then(res => console.log(res));

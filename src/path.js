@@ -4,14 +4,19 @@ const CallForError = require('./error');
 const errorSchema = require('./http-error-schema');
 
 const pathResolver = async (url, params) => {
-    reqUrl = url + '/';
+    reqUrl = url;
     let [protocol, addr] = reqUrl.split('://');
     if(protocol != 'http' && protocol != 'https'){
         throw new CallForError(errorSchema.invalidUrl);
     }
     protocol = protocol === 'http' ? http : https;
-    let path = addr.substring(addr.indexOf('/'));
-    let baseAddr = addr.split('/')[0];
+    let pathSplit = addr.split('/');
+    let baseAddr = pathSplit[0];
+    let path = '';
+    for(let i=1; i<pathSplit.length; i++){
+        path = path + '/';
+        path = path + pathSplit[i];
+    }
     let [host, port] = baseAddr.split(':');
 
     let reqParams = {

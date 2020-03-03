@@ -38,13 +38,13 @@ const callfor = async (reqUrl, params = {}) => {
                 response.StatusCode = statusCode;
                 response.RequestedUrl = reqUrl;
                 response.Data = totalData;
-                response.utf8 = () => {
+                response.utf8 = async () => {
                     return totalData.toString('utf8')
                 }
-                response.json = () => {
+                response.json = async () => {
                     return totalData.toJSON();
                 }
-                response.arrayBuffer = () => {
+                response.arrayBuffer = async () => {
                     return totalData.buffer;
                 }
                 resolve(response);
@@ -69,9 +69,10 @@ const callfor = async (reqUrl, params = {}) => {
 
 // (async () => {
 //     try {
-//       const data = await callfor(
-//         'https://the-showman-and-the-g-clef-u8pmjbhb7ixy.runkit.sh',
+//       let data = await callfor(
+//         'http://localhost:3000/user',
 //       );
+//       data = await data.utf8();
 //       console.log(data);
 //     } catch (error) {
 //       console.log(error);
@@ -82,9 +83,9 @@ const callfor = async (reqUrl, params = {}) => {
 //callfor('https://jsonplaceholder.typicode.com/todos').then(res => res.utf8()).then(res=> console.log(res));
 
 
-callfor('https://jsonplaceholder.typicode.com/posts').then(res => res.arrayBuffer()).then(res => console.log(res));
+//callfor('https://jsonplaceholder.typicode.com/posts').then(res => res.arrayBuffer()).then(res => console.log(res));
 
-//callfor('http://localhost:3000/user').then(res => res.utf8()).then(res => console.log(res));
+callfor('http://localhost:3000/user').then(res => res.json()).then(res => console.log(res));
 
 
 // callfor('https://jsonplaceholder.typicode.com/posts', {

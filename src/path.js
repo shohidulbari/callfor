@@ -3,8 +3,7 @@ const http = require('http');
 const CallForError = require('./error');
 const errorSchema = require('./http-error-schema');
 
-const pathResolver = async (url, params) => {
-    reqUrl = url;
+const pathResolver = async (reqUrl, params) => {
     let [protocol, addr] = reqUrl.split('://');
     if(protocol != 'http' && protocol != 'https'){
         throw new CallForError(errorSchema.invalidUrl);

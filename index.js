@@ -11,8 +11,7 @@ const callfor = async (reqUrl, params = {}) => {
 
     const protocol = resp.protocol;
     const reqParams = resp.reqParams;
-
-    console.log(reqParams);
+    
     return new Promise((resolve, reject) => {
         let req = protocol.request(reqParams, resp => {
             let statusCode = null;
@@ -67,50 +66,4 @@ const callfor = async (reqUrl, params = {}) => {
 
 }
 
-// (async () => {
-//     try {
-//       let data = await callfor(
-//         'http://localhost:3000/user',
-//       );
-//       data = await data.utf8();
-//       console.log(data);
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   })();
-
-//callfor('https://the-showman-and-the-g-clef-u8pmjbhb7ixy.runkit.sh').then(res => res.utf8()).then(res => console.log(res));
-//callfor('https://jsonplaceholder.typicode.com/todos').then(res => res.utf8()).then(res=> console.log(res));
-
-
-//callfor('https://jsonplaceholder.typicode.com/posts').then(res => res.arrayBuffer()).then(res => console.log(res));
-
-callfor('http://localhost:3000/user').then(res => res.json()).then(res => console.log(res));
-
-
-// callfor('https://jsonplaceholder.typicode.com/posts', {
-//     method: 'POST',
-//     body : JSON.stringify({
-//         title: 'sbr',
-//         body: 'this is new shohidul bari ritoo',
-//         userId: 1
-//     }),
-//     headers: {
-//         "Content-type": "application/json; charset=UTF-8"
-//     }
-// }).then(res => res.utf8()).then(res => console.log(res));
-
-// callfor('https://jsonplaceholder.typicode.com/posts/1', {
-//     method: 'DELETE'
-// }).then(res => console.log(res));
-
-// callfor('http://localhost:3000/user', {
-//     method: 'DELETE',
-//     body: JSON.stringify({
-//         name : 'shohidul bari',
-//         age : 25
-//     }),
-//     headers: {
-//         "Content-type": "application/json; charset=UTF-8"
-//     }
-// }).then(res=> res.utf8()).then(res => console.log(res));
+module.exports = callfor;

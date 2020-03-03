@@ -1,12 +1,25 @@
 {
   "name": "callfor",
   "version": "1.0.0",
-  "description": "Fetching data with http and https client",
+  "description": "Node.js http/https client",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "Shohidul Bari",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {},
+  "keywords":[
+    "fetch",
+    "node",
+    "http",
+    "https",
+    "request",
+    "data",
+    "async",
+    "await",
+    "promise"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sbr35/callfor.git"
+  },
+  "homepage": "https://github.com/sbr35/callfor#readme"
 }

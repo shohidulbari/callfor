@@ -3,7 +3,9 @@
   "version": "1.0.2",
   "description": "Node.js http/https client",
   "main": "index",
-  "typings": "index",
+  "files": [
+    "index.js"
+  ],
   "author": "Shohidul Bari",
   "license": "ISC",
   "dependencies": {},

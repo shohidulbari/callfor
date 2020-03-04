@@ -1,9 +1,11 @@
 # callfor
 ## Introduction
-callfor is an light weight Node.js http/https client. This supports Promise as well as Async/Await. This can be use for fetching data from API or any http/https address.
+callfor is an light weight Node.js http/https client. This supports Promise as well as Async/Await. This can be use for fetching data from API or any http/https address as well as POST data. All request methods like GET, POST, PUT, DELETE are supported.
 
 ## Features
-* Fetch data from API or http/https URL.
+* Fetch/ GET data from API or http/https URL.
+* POST data to http/https URL.
+* PUT, DELETE Request supported.
 * Common error handling.
 * Data can be get in many format like Buffer, ArrayBuffer, JSON, UTF-8 or Readable Text.
 * No other dependencies excepts Node.js.
@@ -15,7 +17,7 @@ callfor is an light weight Node.js http/https client. This supports Promise as w
     npm install callfor
 
 ### Use
-#### Basic
+#### GET Request
     const callfor = require('callfor');
     callfor('https://jsonplaceholder.typicode.com/posts').then(res => console.log(res));
 #### Get Data In Different Format
@@ -44,6 +46,41 @@ callfor is an light weight Node.js http/https client. This supports Promise as w
 	    let arrayBufferData = await data.arrayBuffer();
 	    let jsonBufferData = await data.json();
     }
+
+#### POST Request
+
+    callfor('https://jsonplaceholder.typicode.com/posts', {
+	    method: 'POST',
+	    body: JSON.stringify({
+		    title: 'sbr',
+		    body: 'shohidul bari',
+		    userId: 1
+	    }),
+	    headers: {
+		   "Content-type":  "application/json; charset=UTF-8" 
+	    }
+    }).then(res => res.utf8()).then(res => console.log(res));
+
+#### Async / Await
+
+   
+
+    let resp = await callfor('https://jsonplaceholder.typicode.com/posts'){
+	    method: 'POST',
+	    body: JSON.stringify({
+		    title: 'sbr',
+		    body: 'shohidul bari',
+		    userId: 1
+	    }),
+	    headers: {
+		    "Content-type":  "application/json; charset=UTF-8"
+	    }
+    }
+    resp = await resp.utf8();
+    console.log(resp);
+
+#### PUT / DELETE Request
+Same as POST Request. Only method value will be change to DELETE or PUT. For DELETE request, Remove body attribute from params. 
     
 #### Main Response Format
 In main response, Data will provided in Node Buffer format. This response also contain 3 utility function to change the format of data like utf8 string, ArrayBuffer, JSON Buffer.
@@ -61,5 +98,4 @@ In main response, Data will provided in Node Buffer format. This response also c
 * utf8() : Readable Text or String Fromat.
 * json() : implemented buffer.toJSON() method to format as JSON Buffer.
 * arrayBuffer(): ArrayBuffer / Uint8Contents Format.
-
 

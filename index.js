@@ -58,7 +58,7 @@ const callfor = async (reqUrl, params = {}) => {
             }
         });
 
-        if(params.body){
+        if(params.body && (params.method == 'POST' || params.method == 'PUT')){
             req.write(params.body);
         }
         req.end();

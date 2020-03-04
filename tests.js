@@ -47,3 +47,4 @@ callfor('https://jsonplaceholder.typicode.com/posts', {
   })();
 
   //Added to gitignore
+  //Dont push to repo

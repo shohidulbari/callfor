@@ -45,3 +45,5 @@ callfor('https://jsonplaceholder.typicode.com/posts', {
       console.error(error);
     }
   })();
+
+  //Added to gitignore
